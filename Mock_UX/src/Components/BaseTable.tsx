@@ -92,23 +92,29 @@ export default function BaseTable(){
 
     useEffect(() => {
         setFilteredRows(rows);
+        setPage(0)
     }, [rows]);
 
-    const applyNameFilter=()=>{
-        let filteredRows=[...rows];
-        console.log("filter value is")
-        console.log(filteredRows);
-        if (nameFilter==""){
-            filteredRows=rows;
-        } 
 
+    useEffect(() => {
+        setPage(0); 
+    }, [filteredRows])
+
+    const applyNameFilter=()=>{
+        let prefilteredrows;
+        if (nameFilter==""){
+            prefilteredrows=rows;
+        }
         else{
-            filteredRows= rows.filter(item =>
-            item.name.toLowerCase().includes(nameFilter.toLocaleLowerCase())
-        );
-        setFilteredRows(filteredRows);
+            prefilteredrows=filteredRows.filter(item =>
+                item.name.toLowerCase().includes(nameFilter.toLocaleLowerCase()))
+        };
+   
+
+       
+        setFilteredRows(prefilteredrows);
     }
-    }
+    
 
     useEffect(()=>{applyNameFilter()},[nameFilter])
 
@@ -245,7 +251,7 @@ export default function BaseTable(){
     <TablePagination
   rowsPerPageOptions={[5, 10, 20]}
   component="div"
-  count={rows.length}
+  count={filteredRows.length}
   rowsPerPage={rowsPerPage}
   page={page}
   onPageChange={handleChangePage}
