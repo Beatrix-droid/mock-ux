@@ -188,6 +188,7 @@ export default function BaseTable(){
               sortHandler={sortTableData}
               />
               <TextField
+               sx={{ input: { color: 'white' } }}
                 size="small"
                 value={nameFilter ||""}
                 onChange={(e:ChangeEvent<HTMLInputElement>) =>
