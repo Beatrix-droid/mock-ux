@@ -17,6 +17,7 @@ import SortingFilters from './sortingFilters';
 import DOMPurify from 'dompurify';
 import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded';
 import EmployeeDetails from './EmployeeDetails';
+import { formatDate } from '../actions/formatDateString';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -51,8 +52,10 @@ export default function BaseTable(){
     const [loading, setLoading]=useState<boolean>(false);
     const [detailsOpen, setDetailsOpen]=useState<boolean>(false);
     const [employeeId, setEmployeeId]= useState<number>(1)
-    const [employeeName, setEmployeeName]=useState<string>("")
-  
+    const [employeeName, setEmployeeName]=useState<string>("");
+    const[ startDate, setStartDate]=useState<string>("");
+
+
 
     const handleChangePage = (
         event: MouseEvent<HTMLButtonElement> | null,
@@ -114,7 +117,7 @@ export default function BaseTable(){
 
     const applyNameFilter=()=>{
         let prefilteredrows;
-        if (nameFilter==""){
+        if (nameFilter=="" && startDate==""){
             prefilteredrows=rows;
         }
         else{
@@ -130,10 +133,11 @@ export default function BaseTable(){
 
     useEffect(()=>{applyNameFilter()},[nameFilter])
 
-    const handleFilterChange=(e: ChangeEvent<HTMLInputElement>)=>{
+    const handleFilterChange=(e: ChangeEvent<HTMLInputElement>, field:string)=>{
         const dirtyInput=e.target.value;
         const cleanInput=DOMPurify.sanitize(dirtyInput)
-       setNameFilter(cleanInput);
+        if(field="name"){setNameFilter(cleanInput)}
+        if (field="startDate"){setStartDate(cleanInput)};
     }
 
     const sortTableData=(key:keyof Employee, descending:boolean)=>{
@@ -204,7 +208,7 @@ export default function BaseTable(){
                 size="small"
                 value={nameFilter ||""}
                 onChange={(e:ChangeEvent<HTMLInputElement>) =>
-                  handleFilterChange(e)
+                  handleFilterChange(e, "name")
                 }
                 onKeyDown={(e) => e.key === "Enter" && applyNameFilter()}/>
               </Box>
@@ -223,10 +227,12 @@ export default function BaseTable(){
           <StyledTableCell align="right">
               <Box>
                   Start Date
+                
           <SortingFilters
               tableColumnName="StartDate"
               sortHandler={sortTableData}
               />
+              
               </Box>
           </StyledTableCell>
           <StyledTableCell align="right">Status
@@ -247,8 +253,8 @@ export default function BaseTable(){
          
             <StyledTableCell align="center">{row.id}</StyledTableCell>
             <StyledTableCell align="center">{row.name}</StyledTableCell>
-            <StyledTableCell align="right">{row.DateOfBirth}</StyledTableCell>
-            <StyledTableCell align="right">{row.StartDate}</StyledTableCell>
+            <StyledTableCell align="right">{formatDate(row.DateOfBirth)}</StyledTableCell>
+            <StyledTableCell align="right">{formatDate(row.StartDate)}</StyledTableCell>
             <StyledTableCell align="right"   sx={{
                       color: row.active ? "green" : "#6E2E35",
                       fontWeight: "bold",

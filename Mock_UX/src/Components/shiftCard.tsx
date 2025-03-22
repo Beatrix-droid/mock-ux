@@ -3,16 +3,8 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import { formatDate } from '../actions/formatDateString';
 
-
-const bull = (
-  <Box
-    component="span"
-    sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-  >
-    •
-  </Box>
-);
 
 interface shiftCardProps{
     location:string;
@@ -50,16 +42,16 @@ export default function ShiftCard({location, role, employeeId, start, end}:shift
           Start
         </Typography>
         <Typography  sx={{ color: 'text.secondary', fontSize:"14px", textAlign:"right" }}>
-          {start.split("T")[1]}
+          {start.split("T")[1].slice(0,-3)}
         </Typography>
         <Typography  sx={{ color: 'text.secondary', fontSize:"14px", textAlign:"right" }}>
-          {start.split("T")[0]}
+          {formatDate(start.split("T")[0])}
         </Typography>
         <Typography  sx={{textAlign:"right"}}>
           End
         </Typography>
-        <Typography sx={{ color: 'text.secondary', fontSize:"12px", textAlign:"right" }}>{end.split("T")[1]}</Typography>
-        <Typography sx={{ color: 'text.secondary', fontSize:"12px", textAlign:"right" }}>{end.split("T")[0]}</Typography>
+        <Typography sx={{ color: 'text.secondary', fontSize:"14px", textAlign:"right" }}>{end.split("T")[1].slice(0,-3)}</Typography>
+        <Typography sx={{ color: 'text.secondary', fontSize:"14px", textAlign:"right" }}>{formatDate(end.split("T")[0])}</Typography>
         </div>
      
       </CardContent>
