@@ -1,6 +1,6 @@
 
 
-import React, {useState, useEffect, ChangeEvent, MouseEvent} from 'react';
+import  {useState, useEffect, ChangeEvent, MouseEvent} from 'react';
 import { styled } from '@mui/material/styles';
 import CircularProgress from '@mui/material/CircularProgress';
 import Table from '@mui/material/Table';
@@ -15,7 +15,8 @@ import {fetchEmployees, Employee} from '../actions/fetchAllEmployees';
 import Box from '@mui/material/Box';
 import SortingFilters from './sortingFilters';
 import DOMPurify from 'dompurify';
-
+import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded';
+import EmployeeDetails from './EmployeeDetails';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -47,7 +48,10 @@ export default function BaseTable(){
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [nameFilter, setNameFilter]=useState<string>("");
     const[filteredRows, setFilteredRows]=useState<Employee[]>([]);
-    const [loading, setLoading]=useState<Boolean>(false);
+    const [loading, setLoading]=useState<boolean>(false);
+    const [detailsOpen, setDetailsOpen]=useState<boolean>(false);
+    const [employeeId, setEmployeeId]= useState<number>(1)
+    const [employeeName, setEmployeeName]=useState<string>("")
   
 
     const handleChangePage = (
@@ -64,6 +68,15 @@ export default function BaseTable(){
         setPage(0);
       };
 
+      const handleOpenDialgoue=(id:number, name:string)=>{
+        setEmployeeId(id);
+        setDetailsOpen(true);
+        setEmployeeName(name);
+      }
+
+      const handleCloseDialgoue=()=>{
+        setDetailsOpen(false);
+      }
     
 
 
@@ -76,8 +89,7 @@ export default function BaseTable(){
         setLoading(true);
       const fetchEmployeeData= async()=>{
         const employees=await fetchEmployees();
-        console.log("fetched data is");
-        console.log(employees)
+      
         if (Array.isArray(employees)){
             setRows(employees);
         }
@@ -238,11 +250,11 @@ export default function BaseTable(){
             <StyledTableCell align="right">{row.DateOfBirth}</StyledTableCell>
             <StyledTableCell align="right">{row.StartDate}</StyledTableCell>
             <StyledTableCell align="right"   sx={{
-                      color: row.active ? "green" : "red",
+                      color: row.active ? "green" : "#6E2E35",
                       fontWeight: "bold",
                   }}>
 {row.active? "Yes":"No"}</StyledTableCell>
-            <StyledTableCell align="center">PlaceHolder</StyledTableCell>
+            <StyledTableCell align="center" onClick={(_e)=>{handleOpenDialgoue(row.id, row.name)}}><LaunchRoundedIcon/></StyledTableCell>
           </StyledTableRow>
         ))}
       </TableBody>
@@ -259,6 +271,9 @@ export default function BaseTable(){
   onRowsPerPageChange={handleChangeRowsPerPage}
 />
   </TableContainer>)}
+
+
+  <EmployeeDetails open={detailsOpen} onClose={handleCloseDialgoue} employeeID={employeeId} employeeName={employeeName}/>
     
   </>
     
