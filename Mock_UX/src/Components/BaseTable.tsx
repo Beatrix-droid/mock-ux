@@ -53,7 +53,7 @@ export default function BaseTable(){
     const [detailsOpen, setDetailsOpen]=useState<boolean>(false);
     const [employeeId, setEmployeeId]= useState<number>(1)
     const [employeeName, setEmployeeName]=useState<string>("");
-    const[ startDate, setStartDate]=useState<string>("");
+  
 
 
 
@@ -117,7 +117,7 @@ export default function BaseTable(){
 
     const applyNameFilter=()=>{
         let prefilteredrows;
-        if (nameFilter=="" && startDate==""){
+        if (nameFilter==""){
             prefilteredrows=rows;
         }
         else{
