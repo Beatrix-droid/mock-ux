@@ -58,7 +58,7 @@ export default function BaseTable(){
 
 
     const handleChangePage = (
-        event: MouseEvent<HTMLButtonElement> | null,
+        _event: MouseEvent<HTMLButtonElement> | null,
         newPage: number,
       ) => {
         setPage(newPage);
@@ -133,11 +133,11 @@ export default function BaseTable(){
 
     useEffect(()=>{applyNameFilter()},[nameFilter])
 
-    const handleFilterChange=(e: ChangeEvent<HTMLInputElement>, field:string)=>{
+    const handleFilterChange=(e: ChangeEvent<HTMLInputElement>)=>{
         const dirtyInput=e.target.value;
         const cleanInput=DOMPurify.sanitize(dirtyInput)
-        if(field="name"){setNameFilter(cleanInput)}
-        if (field="startDate"){setStartDate(cleanInput)};
+        setNameFilter(cleanInput)
+      
     }
 
     const sortTableData=(key:keyof Employee, descending:boolean)=>{
@@ -208,7 +208,7 @@ export default function BaseTable(){
                 size="small"
                 value={nameFilter ||""}
                 onChange={(e:ChangeEvent<HTMLInputElement>) =>
-                  handleFilterChange(e, "name")
+                  handleFilterChange(e)
                 }
                 onKeyDown={(e) => e.key === "Enter" && applyNameFilter()}/>
               </Box>
