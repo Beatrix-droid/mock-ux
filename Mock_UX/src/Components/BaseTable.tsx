@@ -51,7 +51,6 @@ export default function BaseTable(){
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [nameFilter, setNameFilter]=useState<string>("");
-    const[filteredRows, setFilteredRows]=useState<Employee[]>([]);
     const [loading, setLoading]=useState<boolean>(false);
     const [detailsOpen, setDetailsOpen]=useState<boolean>(false);
     const [employeeId, setEmployeeId]= useState<number>(1)
@@ -86,10 +85,21 @@ export default function BaseTable(){
     
 
 
+
+
+    const filteredRows = useMemo(() => {
+        if (nameFilter === "") return rows;
+        return rows.filter((item) =>
+          item.name.toLowerCase().includes(nameFilter.toLowerCase())
+        );
+      }, [nameFilter, rows]);
+
     const paginatedData:Employee[] = useMemo(()=>{return filteredRows.slice(
       page * rowsPerPage,
       page * rowsPerPage + rowsPerPage)}
     ,[filteredRows, page, rowsPerPage]);
+
+
 
     useEffect(()=>{
         setLoading(true);
@@ -109,7 +119,7 @@ export default function BaseTable(){
     },[])
 
     useEffect(() => {
-        setFilteredRows(rows);
+  
         setPage(0)
     }, [rows]);
 
@@ -118,21 +128,25 @@ export default function BaseTable(){
         setPage(0); 
     }, [filteredRows])
 
-    const applyNameFilter=()=>{
-        let prefilteredrows;
-        if (nameFilter==""){
-            prefilteredrows=rows;
-        }
-        else{
-            prefilteredrows=filteredRows.filter(item =>
-                item.name.toLowerCase().includes(nameFilter.toLocaleLowerCase()))
-        };
+
+
+    ///// get rid of the commented code, as it is incorporated in the useMemo
+
+    // const applyNameFilter=()=>{
+    //     let prefilteredrows;
+    //     if (nameFilter==""){
+    //         prefilteredrows=rows;
+    //     }
+    //     else{
+    //         prefilteredrows=filteredRows.filter(item =>
+    //             item.name.toLowerCase().includes(nameFilter.toLocaleLowerCase()))
+    //     };
    
-        setFilteredRows(prefilteredrows);
-    }
+    //     setFilteredRows(prefilteredrows);
+    // }
     
 
-    useEffect(()=>{applyNameFilter()},[nameFilter])
+    //useEffect(()=>{applyNameFilter()},[nameFilter])
 
     const handleFilterChange=(e: ChangeEvent<HTMLInputElement>)=>{
         const dirtyInput=e.target.value;
@@ -170,7 +184,7 @@ export default function BaseTable(){
       if (descending) {
           sortedData.reverse();
       }
-      setFilteredRows(sortedData)
+      setRows(sortedData)
 },[filteredRows])
  
     
@@ -210,7 +224,7 @@ export default function BaseTable(){
                 onChange={(e:ChangeEvent<HTMLInputElement>) =>
                   handleFilterChange(e)
                 }
-                onKeyDown={(e) => e.key === "Enter" && applyNameFilter()}/>
+                onKeyDown={(e) => e.key === "Enter"}/>
               </Box>
               </StyledTableCell>
 

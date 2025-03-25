@@ -13,3 +13,4 @@ That way if an unknow error occures in the ux, the error is handleded, with an e
 
 - added useMemo for computing paginated data. Unless a user changes the number of rows per page , or the page, or the rows, recomputing paginated data is not necessary.
 
+- added use memo for filtered data. The variable filteredData is not a state variable any more, but rather a memoised variable. the Apply filter handler logic is handled in there, along with the useEffect hook that runs when the name filter changes.
