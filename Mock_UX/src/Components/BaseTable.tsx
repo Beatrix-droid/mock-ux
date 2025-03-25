@@ -1,6 +1,6 @@
 
 
-import  {useState, useEffect, ChangeEvent, MouseEvent} from 'react';
+import  {useState, useEffect, ChangeEvent, MouseEvent, lazy, useCallback, useMemo} from 'react';
 import { styled } from '@mui/material/styles';
 import CircularProgress from '@mui/material/CircularProgress';
 import Table from '@mui/material/Table';
@@ -16,8 +16,11 @@ import Box from '@mui/material/Box';
 import SortingFilters from './sortingFilters';
 import DOMPurify from 'dompurify';
 import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded';
-import EmployeeDetails from './EmployeeDetails';
+
+
 import { formatDate } from '../actions/formatDateString';
+
+const EmployeeDetails= lazy(()=>import('./EmployeeDetails'))
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -83,10 +86,10 @@ export default function BaseTable(){
     
 
 
-      const paginatedData = filteredRows.slice(
-		page * rowsPerPage,
-		page * rowsPerPage + rowsPerPage
-	);
+    const paginatedData:Employee[] = useMemo(()=>{return filteredRows.slice(
+      page * rowsPerPage,
+      page * rowsPerPage + rowsPerPage)}
+    ,[filteredRows, page, rowsPerPage]);
 
     useEffect(()=>{
         setLoading(true);
@@ -125,8 +128,6 @@ export default function BaseTable(){
                 item.name.toLowerCase().includes(nameFilter.toLocaleLowerCase()))
         };
    
-
-       
         setFilteredRows(prefilteredrows);
     }
     
@@ -140,38 +141,37 @@ export default function BaseTable(){
       
     }
 
-    const sortTableData=(key:keyof Employee, descending:boolean)=>{
-        let sortedData = [...filteredRows];
+    const sortTableData=useCallback((key:keyof Employee, descending:boolean)=>{
+      let sortedData = [...filteredRows];
 
-        sortedData.sort((a, b) => {
-            const valueA = a[key];
-            const valueB = b[key];
-    
+      sortedData.sort((a, b) => {
+          const valueA = a[key];
+          const valueB = b[key];
+  
+        
+          if (valueA == null) return 1;
+          if (valueB == null) return -1;
+  
           
-            if (valueA == null) return 1;
-            if (valueB == null) return -1;
-    
-            
-            if (typeof valueA === "number" && typeof valueB === "number") {
-                return valueA - valueB;
-            }
-            if (key==="active"){
-                return valueA.toString().localeCompare(valueB.toString());
-            }
-    
-            if (typeof valueA === "string" && typeof valueB === "string") {
-                return valueA.localeCompare(valueB);
-            }
-    
-            return 0;
-        });
-    
-        if (descending) {
-            sortedData.reverse();
-        }
-        setFilteredRows(sortedData)
-	};
-
+          if (typeof valueA === "number" && typeof valueB === "number") {
+              return valueA - valueB;
+          }
+          if (key==="active"){
+              return valueA.toString().localeCompare(valueB.toString());
+          }
+  
+          if (typeof valueA === "string" && typeof valueB === "string") {
+              return valueA.localeCompare(valueB);
+          }
+  
+          return 0;
+      });
+  
+      if (descending) {
+          sortedData.reverse();
+      }
+      setFilteredRows(sortedData)
+},[filteredRows])
  
     
 
@@ -249,7 +249,7 @@ export default function BaseTable(){
       </TableHead>
       <TableBody>
         {paginatedData.map((row) => (
-          <StyledTableRow key={row.name}>
+          <StyledTableRow key={row.id}>
          
             <StyledTableCell align="center">{row.id}</StyledTableCell>
             <StyledTableCell align="center">{row.name}</StyledTableCell>
@@ -280,7 +280,7 @@ export default function BaseTable(){
 
 
   <EmployeeDetails open={detailsOpen} onClose={handleCloseDialgoue} employeeID={employeeId} employeeName={employeeName}/>
-    
+
   </>
     
     

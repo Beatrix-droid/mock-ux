@@ -4,14 +4,15 @@ import {MenuItem, ListItemText, ListItemIcon, Divider, Select } from "@mui/mater
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { Employee } from "../actions/fetchAllEmployees";
-
+import {memo} from "react";
 
 interface SortingFilterProps{
     sortHandler:(tableColumnName: keyof Employee, descending:boolean)=>void;
     tableColumnName:keyof Employee;
 }
-export default function SortingFilters({sortHandler, tableColumnName}:SortingFilterProps){
-    return( 
+ function SortingFilters({sortHandler, tableColumnName}:SortingFilterProps){
+  console.log("rendered")
+  return( 
     
     <>
     {["id", "DateOfBirth", "StartDate"].includes(tableColumnName) &&(  <Select
@@ -88,3 +89,5 @@ export default function SortingFilters({sortHandler, tableColumnName}:SortingFil
       </>
     )
 }
+
+export default memo (SortingFilters);

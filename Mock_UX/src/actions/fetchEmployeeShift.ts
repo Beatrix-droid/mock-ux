@@ -15,7 +15,7 @@ export interface EmployeeShifts{
 
 export const fetchEmployeeShifts = async (employeeId:number): Promise<Array<EmployeeShifts> | string> => {
     const employeeDetailsUrl = 'https://mocki.io/v1/9b0e9cf7-470c-463a-adb2-40c938d58441'
-   console.log("chosen id"+ employeeId)
+
     try {
         const response: AxiosResponse = await axios.get(employeeDetailsUrl);
         const unfilteredData=response.data
@@ -24,8 +24,8 @@ export const fetchEmployeeShifts = async (employeeId:number): Promise<Array<Empl
         return filteredData;
     } catch (error) {
         if (error instanceof Error) {
-            return error.message
+            throw new Error(error.message);
         }
-        return "An unknown error occured"
+        throw new Error("An unknown error occurred");
     }
 }

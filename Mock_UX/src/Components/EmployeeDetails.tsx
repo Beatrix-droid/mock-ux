@@ -32,8 +32,7 @@ export default function EmployeeDetails({open, onClose, employeeID, employeeName
             
               if (Array.isArray(fetchedShifts)){
                   setShifts(fetchedShifts);
-              console.log("fetched shifts are")
-              console.log(fetchedShifts);
+              
                 }
               else{
                   console.error("An error occured fetching employee shifts: "+ fetchedShifts); // error returned in the function
@@ -53,8 +52,8 @@ export default function EmployeeDetails({open, onClose, employeeID, employeeName
         <DialogTitle>{employeeName}'s Upcoming Shifts:</DialogTitle>
        
           {shifts.map((shift) => (
-            <Box sx={{width:"80%", margin:"auto"}}>
-         <ShiftCard  location={shift.Location} role={shift.Role} employeeId={shift.PersonId} start={shift.Start} end={shift.End}/>
+            <Box sx={{width:"80%", margin:"auto"}}  key={shift.Id} >
+         <ShiftCard location={shift.Location} role={shift.Role} employeeId={shift.PersonId} start={shift.Start} end={shift.End}/>
          </Box>
           ))}
           
